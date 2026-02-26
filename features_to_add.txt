@@ -1,0 +1,5 @@
+18, Payslips
+19, Admin queries
+20, HR queries
+21, Provide tools for creating and distributing job advertisements for both internal and
+external audiences, with customizable templates and targeted outreach functionality.
