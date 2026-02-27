@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan Asset QR</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+  <h1 class="text-2xl font-bold mb-4">Scan Asset QR Code</h1>
+  <div id="reader" class="w-full max-w-md mb-4"></div>
+
+  <div id="result" class="bg-white shadow-md p-4 rounded w-full max-w-md hidden">
+    <h2 class="font-semibold mb-2">Asset Details</h2>
+    <pre id="assetData" class="text-sm text-gray-700"></pre>
+  </div>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log("QR code scanned:", decodedText);
+
+      // Call Flask API
+      fetch(`/scan-asset/${decodedText}`)
+        .then(res => res.json())
+        .then(data => {
+          const resultDiv = document.getElementById("result");
+          const assetPre = document.getElementById("assetData");
+
+          if(data.error) {
+            assetPre.textContent = "Asset not found";
+          } else {
+            assetPre.textContent = JSON.stringify(data, null, 2);
+          }
+          resultDiv.classList.remove("hidden");
+        })
+        .catch(err => {
+          console.error("API error:", err);
+        });
+    }
+
+    function onScanError(errorMessage) {
+      console.warn("QR Scan error:", errorMessage);
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10, qrbox: 250 },
+      /* verbose= */ false
+    );
+
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+  </script>
+</body>
+</html>
