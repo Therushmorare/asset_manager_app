@@ -36,6 +36,8 @@ def verify_asset(custodian_id, asset_id, status, description):
         )
 
         db.session.add(save_data)
+
+        asset.status = status
         db.session.commit()
 
         return {'message': 'Asset verified successfully'}, 200

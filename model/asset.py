@@ -18,7 +18,11 @@ class Asset(db.Model):
     residual_value = db.Column(db.Numeric(12, 2), nullable=False)
     useful_life_years = db.Column(db.Integer, nullable=False)
     depreciation_method = db.Column(db.String(50), nullable=False)
-    qr_code = db.Column(db.String)
+    qr_code = db.Column(db.String, default='ACTIVE')
+    status = db.Column(db.String)
+    disposal_date = db.Column(db.String)
+    disposal_value = db.Column(db.Double)
+    gain_loss = db.Column(db.Double)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 

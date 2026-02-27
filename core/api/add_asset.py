@@ -72,6 +72,7 @@ def add_asset(user_id, name, description, category, sub_category,
             residual_value=residual_value,
             useful_life_years=useful_life_years,
             depreciation_method=depreciation_method,
+            status='ACTIVE'
         )
 
         db.session.add(new_asset)
