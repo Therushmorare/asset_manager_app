@@ -1,0 +1,14 @@
+{% extends "base_email.html" %}
+
+{% block header %}
+<div class="header" style="background:green;">Email Verification</div>
+{% endblock %}
+
+{% block content %}
+<p>Hello <b>{{ user_name }}</b>,</p>
+<p>Use the verification code below to verify you login session:</p>
+<div class="box" style="font-size:20px; font-weight:bold; color:green; text-align:center;">
+  {{ keyToken }}
+</div>
+<p>This code will expire soon. If you didn’t request this, please ignore.</p>
+{% endblock %}

@@ -1,0 +1,8 @@
+# 1. Generate and save MFA
+code = save_mfa_code(admin_id, 'admin')
+
+# 2. Send MFA email
+send_mfa_email(admin_email, 'admin', code)
+
+# 3. Verify MFA when admin enters it
+is_valid, message = verify_mfa_code(admin_id, entered_code)

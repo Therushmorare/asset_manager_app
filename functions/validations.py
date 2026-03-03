@@ -1,6 +1,6 @@
 # validators.py
 from datetime import datetime
-from asset_template import TEMPLATE_FIELDS
+from functions.asset_template import TEMPLATE_FIELDS
 
 def validate_row(row: dict):
     errors = []

@@ -5,7 +5,7 @@ from functions.validations import validate_row
 from model.asset import Asset
 from database import db
 from functions.celery_worker import celery_ext
-from api.asset_code_gen import generate_qr_code
+from core.api.asset_code_gen import generate_qr_code
 from functions.user_logs import log_applicant_track
 
 MAX_ROWS = 1000

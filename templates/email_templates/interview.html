@@ -1,0 +1,17 @@
+{% extends "base_email.html" %}
+
+{% block header %}
+<div class="header" style="background:#17a2b8;">Interview Invitation</div>
+{% endblock %}
+
+{% block content %}
+<p>Dear {{ first_name }} {{ last_name }},</p>
+<p>We are pleased to invite you for an interview.</p>
+<div class="box">
+  <p><b>Date:</b> {{ date }}</p>
+  <p><b>Time:</b> {{ time }}</p>
+  <p><b>Location:</b> {{ location }}</p>
+  <p><b>Details:</b> {{ details }}</p>
+</div>
+<p>Please confirm your attendance at your earliest convenience.</p>
+{% endblock %}

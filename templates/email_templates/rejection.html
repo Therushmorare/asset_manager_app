@@ -1,0 +1,11 @@
+{% extends "base_email.html" %}
+
+{% block header %}
+<div class="header" style="background:#dc3545;">Application Update</div>
+{% endblock %}
+
+{% block content %}
+<p>Dear {{ first_name }} {{ last_name }},</p>
+<p>We appreciate your interest in joining us. Unfortunately, after careful consideration, we will not be moving forward with your application.</p>
+<p>We wish you the best in your future endeavors.</p>
+{% endblock %}

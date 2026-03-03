@@ -1,9 +1,10 @@
 import logging
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template, request, url_for, redirect, session, jsonify
-from models.applicant import ExternalApplicant, InternalApplicant
-from models.hr_account import Recruiter
-from models.admin_user import AdminUser
+from model.admin import AdminUser
+from model.asset_controller import AssetController
+from model.asset_manager import AssetManager
+from model.custodian import Custodian
 
 logger = logging.getLogger(__name__)
 login_manager = LoginManager()
@@ -17,24 +18,24 @@ def load_user(user_id):
     logger.info(f'Loading user with ID: {user_id}')
     
     # Try loading from ExternalApplicant
-    user = ExternalApplicant.query.get(user_id)
+    user = AssetController.query.get(user_id)
     if user:
-        user.user_type = 'External'
-        logger.info(f'External User loaded: {user.email}')
+        user.user_type = 'Controller'
+        logger.info(f'Asset Controller User loaded: {user.email}')
         return user
     
     # Try loading from InternalApplicant
-    user = InternalApplicant.query.get(user_id)
+    user = AssetManager.query.get(user_id)
     if user:
-        user.user_type = 'Internal'
-        logger.info(f'Internal User loaded: {user.email}')
+        user.user_type = 'Manager'
+        logger.info(f'Asset Manager User loaded: {user.email}')
         return user
     
     #Try loading Recruiter
-    user = Recruiter.query.get(user_id)
+    user = Custodian.query.get(user_id)
     if user:
-        user.user_type = 'HR'
-        logger.info(f'Recruiter User loaded: {user.email}')
+        user.user_type = 'Custodian'
+        logger.info(f'Custodian User loaded: {user.email}')
         return user
 
     #Try loading from AdminUSer

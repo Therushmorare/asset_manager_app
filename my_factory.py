@@ -11,7 +11,7 @@ from extensions import db, bcrypt, mail, cache, limiter, session_ext, babel, jwt
 from functions.celery_worker import celery_ext
 from functions.bug_logger import init_sentry, init_email_fallback
 from mail_util import init_mail
-from candidate_api.auth import *   # candidate endpoints
+from core.auth import *
 from functions.login_auths import login_manager  # import the login_manager instance
 from functions.error_handlers import register_error_handlers
 from flask_cors import CORS
@@ -37,10 +37,6 @@ def create_app():
                     "http://localhost:3000",
                     "http://64.225.45.179:3000",
                     "http://127.0.0.1:5000",
-                    "https://plankton-app-c922c.ondigitalocean.app",
-                    "https://bma-admin.netlify.app",
-                    "https://vut-app-pl78t.ondigitalocean.app",
-                    "https://bma-hr.netlify.app"
                 ]
             }
         },
@@ -94,7 +90,7 @@ def create_app():
     api = Api(
         app,
         version="1.0",
-        title="BMA API",
+        title="Talius API",
         description="Auto-documented API",
         authorizations=authorizations,
         security="Bearer Auth",
@@ -102,12 +98,8 @@ def create_app():
     )
 
     # Register Blueprints (one for each _api folder)
-    from candidate_api.routes import candidate_ns
-    from hr_api.routes import humanResource_ns
-    from admin_api.routes import admin_ns
-    api.add_namespace(candidate_ns, path="/api/candidate")
-    api.add_namespace(humanResource_ns, path="/api/hr")
-    api.add_namespace(admin_ns, path="/api/admin")
+    from core.routes.endpoints import api_ns
+    api.add_namespace(api_ns, path="/api/talius")
 
     # Register error handlers globally
     register_error_handlers(app)
