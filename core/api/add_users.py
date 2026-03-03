@@ -10,6 +10,7 @@ from model.asset_controller import AssetController
 from model.asset_manager import AssetManager
 from model.custodian import Custodian
 from api.account_checker import check_user
+from functions.user_logs import log_applicant_track
 
 """
 Add users
@@ -125,7 +126,7 @@ def add_user(email, first_name, last_name,
         # ---- Logs -------------------------
         if adder_id:
             #add logs
-            Logs()
+            log_applicant_track(adder_id, 'ADMIN', f'Added a new user with this ID:{user_id}')
 
         return {
             'message': 'User added successfully',

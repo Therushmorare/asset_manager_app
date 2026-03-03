@@ -3,6 +3,7 @@ from database import db
 from model.asset import Asset
 from model.verification import AssetVerification
 from model.custodian import Custodian
+from functions.user_logs import log_applicant_track
 
 def verify_asset(custodian_id, asset_id, status, description):
     try:
@@ -39,6 +40,8 @@ def verify_asset(custodian_id, asset_id, status, description):
 
         asset.status = status
         db.session.commit()
+
+        log_applicant_track(custodian_id, 'CUSTODIAN', f'Verified and updated asset status with the following ID:{asset_id}')
 
         return {'message': 'Asset verified successfully'}, 200
 

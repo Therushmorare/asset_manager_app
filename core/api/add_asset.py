@@ -6,6 +6,7 @@ from model.admin import AdminUser
 from model.asset_manager import AssetManager
 from model.asset_controller import AssetController
 from functions.qr_task import generate_qr_per_asset_task
+from functions.user_logs import log_applicant_track
 
 VALID_METHODS = ["STRAIGHT_LINE", "REDUCING_BALANCE", "UNITS_OF_PRODUCTION"]
 
@@ -80,6 +81,8 @@ def add_asset(user_id, name, description, category, sub_category,
 
         # ---- Trigger QR Generation (Background Task) ----
         generate_qr_per_asset_task.delay(asset_id)
+
+        log_applicant_track(user_id, 'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN with this ID:{user_id}, added a new asset with the following asset ID:{asset_id}')
 
         return {
             'message': 'Added asset successfully',

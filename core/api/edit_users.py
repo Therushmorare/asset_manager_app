@@ -10,6 +10,7 @@ from model.asset_controller import AssetController
 from model.asset_manager import AssetManager
 from model.custodian import Custodian
 from api.account_checker import check_user
+from functions.user_logs import log_applicant_track
 
 """
 Edit users
@@ -65,6 +66,7 @@ def edit_user(editor_id, user_id, user_type, **updates):
         db.session.commit()
 
         #logs here
+        log_applicant_track(editor_id, 'ADMIN', f'Edited account/profile details of :{user_id}')
 
         return {'message': 'User updated successfully'}, 200
 

@@ -6,6 +6,7 @@ from model.asset import Asset
 from database import db
 from functions.celery_worker import celery_ext
 from api.asset_code_gen import generate_qr_code
+from functions.user_logs import log_applicant_track
 
 MAX_ROWS = 1000
 
@@ -71,6 +72,8 @@ def import_assets(self, user_id, csv_content):
         # Trigger QR generation only for inserted assets
         if asset_ids:
             generate_qr_code.delay(asset_ids=asset_ids)
+
+        log_applicant_track(user_id, 'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN', f'Added bulk asset with the following asset IDs:{asset_ids}')
 
         return {
             "imported_rows": len(all_valid),

@@ -9,6 +9,7 @@ from model.admin import AdminUser
 from database import db
 import uuid
 from datetime import datetime, timezone
+from functions.user_logs import log_applicant_track
 
 #asset manager files the request
 def asset_disposal_request(manager_id, asset_id, reason_for_disposal, proposed_disposal_method, date, proceeds, supporting_docs):
@@ -61,6 +62,8 @@ def asset_disposal_request(manager_id, asset_id, reason_for_disposal, proposed_d
 
         db.session.add(save_data)
         db.session.commit()
+
+        log_applicant_track(manager_id, 'ASSET MANAGER', f'Filed a request to dispose asset with the following ID:{asset_id}')
 
         return {'message': 'Disposal request lodged successfully'}, 201
 
@@ -115,6 +118,8 @@ def admin_disposal_approve(admin_id, disposal_id, status):
         disposal.approved_by = admin_id
         disposal.approved_at = datetime.now(timezone.utc)
         db.session.commit()
+
+        log_applicant_track(admin_id, 'ADMIN', f'Approved the disposal of the following asset: {asset.asset_id}, with the following disposal ID:{disposal_id}')
 
         return {'message': f'Asset disposal request {status} successfully'}, 200
 
