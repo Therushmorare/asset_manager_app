@@ -8,10 +8,10 @@ from mail_util import mail
 from database import db
 from flask import jsonify
 from .email_sender import send_verification_email
-from model.admin import AdminUser
-from model.asset_controller import AssetController
-from model.asset_manager import AssetManager
-from model.custodian import Custodian
+from models.admin import AdminUser
+from models.asset_controller import AssetController
+from models.asset_manager import AssetManager
+from models.custodian import Custodian
 
 """
 Send verification code and verify it

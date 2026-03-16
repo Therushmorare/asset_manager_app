@@ -2,7 +2,7 @@ from flask import current_app
 import csv
 from io import StringIO
 from functions.validations import validate_row
-from model.asset import Asset
+from models.asset import Asset
 from database import db
 from functions.celery_worker import celery_ext
 from core.api.asset_code_gen import generate_qr_code

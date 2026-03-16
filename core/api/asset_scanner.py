@@ -2,7 +2,7 @@
 Scan Asset
 """
 
-from model.asset import Asset
+from models.asset import Asset
 
 def scan_asset(asset_id):
     try:

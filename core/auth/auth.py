@@ -10,10 +10,10 @@ from flask_mail import Mail, Message
 from mail_util import mail
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from core.api.email_sender import *
-from model.admin import AdminUser
-from model.asset_manager import AssetManager
-from model.asset_controller import AssetController
-from model.custodian import Custodian
+from models.admin import AdminUser
+from models.asset_manager import AssetManager
+from models.asset_controller import AssetController
+from models.custodian import Custodian
 import secrets
 from flask_jwt_extended import create_access_token
 from datetime import timedelta

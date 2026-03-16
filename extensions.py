@@ -9,7 +9,6 @@ from flask_session import Session
 from flask_babel import Babel
 from flask_jwt_extended import JWTManager
 
-db = SQLAlchemy()
 bcrypt = Bcrypt()
 mail = Mail()
 cache = Cache()

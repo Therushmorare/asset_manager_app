@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, url_for, redirect,send_from_directory, jsonify,session, flash
 from database import db
 from datetime import datetime
-from model.logs import UserLogs
-from model.admin import AdminUser
-from model.asset_controller import AssetController
-from model.asset_manager import AssetManager
-from model.custodian import Custodian
+from models.logs import UserLogs
+from models.admin import AdminUser
+from models.asset_controller import AssetController
+from models.asset_manager import AssetManager
+from models.custodian import Custodian
 
 """
 Capture all user logs throughout the app

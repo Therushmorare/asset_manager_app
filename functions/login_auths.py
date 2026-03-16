@@ -1,10 +1,10 @@
 import logging
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template, request, url_for, redirect, session, jsonify
-from model.admin import AdminUser
-from model.asset_controller import AssetController
-from model.asset_manager import AssetManager
-from model.custodian import Custodian
+from models.admin import AdminUser
+from models.asset_controller import AssetController
+from models.asset_manager import AssetManager
+from models.custodian import Custodian
 
 logger = logging.getLogger(__name__)
 login_manager = LoginManager()

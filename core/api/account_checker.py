@@ -1,10 +1,10 @@
 """
 Check if user already exists
 """
-from model.admin import AdminUser
-from model.asset_controller import AssetController
-from model.asset_manager import AssetManager
-from model.custodian import Custodian
+from models.admin import AdminUser
+from models.asset_controller import AssetController
+from models.asset_manager import AssetManager
+from models.custodian import Custodian
 
 def check_user(email):
     try:

@@ -1,6 +1,6 @@
 from functions.celery_worker import celery_ext
 from database import db
-from model.asset import Asset, DepreciationEntry
+from models.asset import Asset, DepreciationEntry
 from datetime import datetime
 from core.api.depreciation_engine import *
 

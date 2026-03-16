@@ -1,11 +1,11 @@
 """
 Asset Disposal
 """
-from model.asset_manager import AssetManager
-from model.asset import Asset
+from models.asset_manager import AssetManager
+from models.asset import Asset
 from functions.file_uploder import file_upload
-from model.disposal_ledger import DisposalLedger
-from model.admin import AdminUser
+from models.disposal_ledger import DisposalLedger
+from models.admin import AdminUser
 from database import db
 import uuid
 from datetime import datetime, timezone

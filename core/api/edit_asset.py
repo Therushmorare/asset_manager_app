@@ -1,10 +1,10 @@
 import uuid
 from flask import current_app
 from database import db
-from model.asset import Asset
-from model.admin import AdminUser
-from model.asset_manager import AssetManager
-from model.asset_controller import AssetController
+from models.asset import Asset
+from models.admin import AdminUser
+from models.asset_manager import AssetManager
+from models.asset_controller import AssetController
 from functions.qr_task import generate_qr_per_asset_task
 from functions.user_logs import log_applicant_track
 

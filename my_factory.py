@@ -7,7 +7,8 @@ from flask_restx import Api
 from functools import wraps
 
 from config import Config
-from extensions import db, bcrypt, mail, cache, limiter, session_ext, babel, jwt
+from database import db
+from extensions import bcrypt, mail, cache, limiter, session_ext, babel, jwt
 from functions.celery_worker import celery_ext
 from functions.bug_logger import init_sentry, init_email_fallback
 from mail_util import init_mail

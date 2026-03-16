@@ -1,13 +1,7 @@
 """
 Asset locator
 """
-from model.asset import Asset
-from geopy.geocoders import Nominatim
-
-"""
-Asset locator
-"""
-from model.asset import Asset
+from models.asset import Asset
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 

@@ -6,11 +6,11 @@ from datetime import datetime
 from extensions import bcrypt
 from functions.random_string import generate_random_string
 from core.api.email_sender import send_credentials
-from model.admin import AdminUser
-from model.asset_controller import AssetController
-from model.asset_manager import AssetManager
-from model.custodian import Custodian
-from model.asset import Asset
+from models.admin import AdminUser
+from models.asset_controller import AssetController
+from models.asset_manager import AssetManager
+from models.custodian import Custodian
+from models.asset import Asset
 from core.api.account_checker import check_user
 from functions.user_logs import log_applicant_track
 

@@ -2,11 +2,11 @@
 Generate QR Code (Batch Safe Version)
 """
 
-from model.asset import Asset
+from models.asset import Asset
 from functions.qr_gen import qr_code
 from functions.file_uploder import file_upload
 from database import db
-from model.qr_codes import AssetQRCodes
+from models.qr_codes import AssetQRCodes
 from functions.celery_worker import celery_ext
 from flask import current_app
 

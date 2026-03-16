@@ -1,9 +1,9 @@
 import uuid
 from database import db
-from model.asset import Asset
-from model.verification import AssetVerification
-from model.custodian import Custodian
-from model.asset_controller import AssetController                                                                                      
+from models.asset import Asset
+from models.verification import AssetVerification
+from models.custodian import Custodian
+from models.asset_controller import AssetController                                                                                      
 from functions.user_logs import log_applicant_track
 
 def verify_asset(custodian_id, asset_id, status, description):
