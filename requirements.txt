@@ -33,7 +33,7 @@ cachetools
 Faker
 flask_restx
 pdfplumber
-#spacy
+qrcode
 itsdangerous
 flask-jwt-extended
 stripe

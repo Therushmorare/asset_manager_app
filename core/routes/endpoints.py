@@ -17,6 +17,7 @@ import json
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config import Config
+from functions.form_sanitizer import sanitize_input
 
 limiter = Limiter(get_remote_address, default_limits=["100 per hour"], storage_uri= Config.redis_connection)
 """
@@ -263,18 +264,18 @@ class AssetCreate(Resource):
 
         response, status_code = add_asset(
             user_id=data.get("user_id"),
-            name=data.get("name"),
-            description=data.get("description"),
-            category=data.get("category"),
-            sub_category=data.get("sub_category"),
-            department=data.get("department"),
-            custodian=data.get("custodian"),
-            location=data.get("location"),
-            acquisition_date=data.get("acquisition_date"),
-            cost=data.get("cost"),
-            residual_value=data.get("residual_value"),
-            useful_life_years=data.get("useful_life_years"),
-            depreciation_method=data.get("depreciation_method"),
+            name=sanitize_input(data.get("name")),
+            description=sanitize_input(data.get("description")),
+            category=sanitize_input(data.get("category")),
+            sub_category=sanitize_input(data.get("sub_category")),
+            department=sanitize_input(data.get("department")),
+            custodian=sanitize_input(data.get("custodian")),
+            location=sanitize_input(data.get("location")),
+            acquisition_date=sanitize_input(data.get("acquisition_date")),
+            cost=sanitize_input(data.get("cost")),
+            residual_value=sanitize_input(data.get("residual_value")),
+            useful_life_years=sanitize_input(data.get("useful_life_years")),
+            depreciation_method=sanitize_input(data.get("depreciation_method")),
         )
 
         return response, status_code
@@ -294,13 +295,13 @@ class UserCreate(Resource):
         data = request.json
 
         response, status_code = add_user(
-            email=data.get("email"),
-            first_name=data.get("first_name"),
-            last_name=data.get("last_name"),
-            department=data.get("department"),
-            role=data.get("role"),
-            phone_number=data.get("phone_number"),
-            user_type=data.get("user_type"),
+            email=sanitize_input(data.get("email")),
+            first_name=sanitize_input(data.get("first_name")),
+            last_name=sanitize_input(data.get("last_name")),
+            department=sanitize_input(data.get("department")),
+            role=sanitize_input(data.get("role")),
+            phone_number=sanitize_input(data.get("phone_number")),
+            user_type=sanitize_input(data.get("user_type")),
             adder_id=data.get("adder_id")
         )
 
@@ -321,13 +322,13 @@ class UserCreate(Resource):
         data = request.json
 
         response, status_code = add_user(
-            email=data.get("email"),
-            first_name=data.get("first_name"),
-            last_name=data.get("last_name"),
-            department=data.get("department"),
-            role=data.get("role"),
-            phone_number=data.get("phone_number"),
-            user_type=data.get("user_type")
+            email=sanitize_input(data.get("email")),
+            first_name=sanitize_input(data.get("first_name")),
+            last_name=sanitize_input(data.get("last_name")),
+            department=sanitize_input(data.get("department")),
+            role=sanitize_input(data.get("role")),
+            phone_number=sanitize_input(data.get("phone_number")),
+            user_type=sanitize_input(data.get("user_type"))
         )
 
         return response, status_code
@@ -352,10 +353,10 @@ class AssetDisposal(Resource):
         response, status_code = asset_disposal_request(
             manager_id=data.get("manager_id"),
             asset_id=data.get("asset_id"),
-            reason_for_disposal=data.get("reason_for_disposal"),
-            proposed_disposal_method=data.get("proposed_disposal_method"),
-            date=data.get("date"),
-            proceeds=data.get("proceeds"),
+            reason_for_disposal=sanitize_input(data.get("reason_for_disposal")),
+            proposed_disposal_method=sanitize_input(data.get("proposed_disposal_method")),
+            date=sanitize_input(data.get("date")),
+            proceeds=sanitize_input(data.get("proceeds")),
             supporting_docs=data.get("supporting_docs")
         )
 
@@ -420,7 +421,7 @@ class VerifyAsset(Resource):
             custodian_id=data.get("custodian_id"),
             asset_id=data.get("asset_id"),
             status=data.get("status"),
-            description=data.get("description")
+            description=sanitize_input(data.get("description"))
         )
 
         return response, status_code
@@ -560,9 +561,9 @@ class Login(Resource):
 
         data = request.json
 
-        email = data.get("email")
-        password = data.get("password")
-        user_type = data.get("user_type")
+        email = sanitize_input(data.get("email"))
+        password = sanitize_input(data.get("password"))
+        user_type = sanitize_input(data.get("user_type"))
 
         if user_type not in ["admin", "asset_manager", "asset_controller", "custodian"]:
             return {"message": "Invalid user type"}, 400
