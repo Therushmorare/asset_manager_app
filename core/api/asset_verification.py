@@ -3,6 +3,7 @@ from database import db
 from model.asset import Asset
 from model.verification import AssetVerification
 from model.custodian import Custodian
+from model.asset_controller import AssetController                                                                                      
 from functions.user_logs import log_applicant_track
 
 def verify_asset(custodian_id, asset_id, status, description):
@@ -12,7 +13,7 @@ def verify_asset(custodian_id, asset_id, status, description):
             return {'message': 'Please check for missing fields'}, 400
 
         # Check custodian exists
-        custodian = Custodian.query.filter_by(user_id=custodian_id).first()
+        custodian = AssetController.query.filter_by(controller_id=custodian_id).first()
         if not custodian:
             return {'message': 'You don’t have permission to perform this action'}, 403
 
@@ -41,7 +42,7 @@ def verify_asset(custodian_id, asset_id, status, description):
         asset.status = status
         db.session.commit()
 
-        log_applicant_track(custodian_id, 'CUSTODIAN', f'Verified and updated asset status with the following ID:{asset_id}')
+        log_applicant_track(custodian_id, 'ASSET CONTROLLER', f'Verified and updated asset status with the following ID:{asset_id}')
 
         return {'message': 'Asset verified successfully'}, 200
 
