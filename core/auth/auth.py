@@ -17,6 +17,8 @@ from models.custodian import Custodian
 import secrets
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
+from core.mfa.mfa_code_generation import save_mfa_code
+from core.mfa.mfa_email import send_mfa_email
 # from your_sage_integration import check_user_in_sage  # placeholder
 
 """
@@ -58,6 +60,12 @@ def signin_applicants(email, password, user_type):
 
         # Reset login attempts
         session.pop('login_attempts', None)
+
+        #mfa code send
+        mfa_code = save_mfa_code(user.id, user_type)
+        user_email = getattr(user, "email", email)
+        if user_email:
+            send_mfa_email(user_email, user_type, mfa_code)
 
         # Perform login + create JWT
         login_user(user)

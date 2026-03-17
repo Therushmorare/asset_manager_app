@@ -13,11 +13,13 @@ from core.api.depreciation_schedular import run_depreciation
 from core.api.edit_asset import edit_asset
 from core.api.edit_users import edit_user
 from core.auth.auth import signin_applicants
+from core.mfa.verify_mfa_code import verify_mfa_code
 import json
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config import Config
 from functions.form_sanitizer import sanitize_input
+from core.auth.resend_mfa import resend_mfa
 
 limiter = Limiter(get_remote_address, default_limits=["100 per hour"], storage_uri= Config.redis_connection)
 """
@@ -211,6 +213,47 @@ edit_user_model = api_ns.model("EditUserRequest", {
 
 edit_user_response = api_ns.model("EditUserResponse", {
     "message": fields.String
+})
+
+mfa_verify_model = api_ns.model("MfaVerifyRequest", {
+    "user_id": fields.String(
+        required=True,
+        description="Unique ID of the user to verify the MFA code for",
+        example="123e4567-e89b-12d3-a456-426614174000"
+    ),
+    "code": fields.String(
+        required=True,
+        description="MFA code sent to the user via email or SMS",
+        example="482913"
+    )
+})
+
+mfa_verify_success_model = api_ns.model("MfaVerifySuccess", {
+    "message": fields.String(
+        description="Status message for MFA verification",
+        example="MFA code verified successfully"
+    ),
+    "verified": fields.Boolean(
+        description="Whether the MFA code is valid",
+        example=True
+    ),
+    "token": fields.String(
+        description="JWT token returned after successful MFA verification",
+        example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    )
+})
+
+error_model = api_ns.model('ErrorResponse', {
+    'message': fields.String(example='Something went wrong')
+})
+
+resend_mfa_model = api_ns.model('ResendMFA', {
+    'email': fields.String(required=True, description='User email address'),
+    'user_type': fields.String(
+        required=True,
+        description='Type of user',
+        enum=['ADMIN', 'ASSET_MANAGER', 'ASSET_CONTROLLER', 'CUSTODIAN']
+    )
 })
 # -----------------------------
 # Endpoints
@@ -573,5 +616,28 @@ class Login(Resource):
             password=password,
             user_type=user_type
         )
+
+        return response, status_code
+    
+@api_ns.route('/resend-mfa')
+class ResendMFAResource(Resource):
+
+    @api_ns.expect(resend_mfa_model)
+    @api_ns.doc(
+        description="Resend MFA code to user's email",
+        responses={
+            200: 'Success',
+            400: 'Bad request',
+            404: 'User not found',
+            500: 'Internal server error'
+        }
+    )
+    def post(self):
+        data = api_ns.payload
+
+        email = data.get('email')
+        user_type = data.get('user_type')
+
+        response, status_code = resend_mfa(email, user_type)
 
         return response, status_code
