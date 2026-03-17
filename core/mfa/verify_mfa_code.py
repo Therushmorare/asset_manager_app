@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta, timezone
 from database import db
-from models.mfa_table import MFA_Code
+from models.mfa_model import MFA_Code
 
 
 def verify_mfa_code(user_id, code):
