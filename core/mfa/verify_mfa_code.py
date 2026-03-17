@@ -5,16 +5,35 @@ from models.mfa_model import MFA_Code
 
 
 def verify_mfa_code(user_id, code):
-    """Check if the MFA code is valid"""
-    mfa_record = MFA_Code.query.filter_by(user_id=user_id, code=code, verified=False).first()
-    if not mfa_record:
-        return False, "Invalid code"
+    """
+    Check if the MFA code is valid and return JSON-compatible response
+    """
+    try:
+        # Look for unverified MFA record
+        mfa_record = MFA_Code.query.filter_by(
+            user_id=user_id,
+            code=code,
+            verified=False
+        ).first()
 
-    expires_aware = mfa_record.expires_at.replace(tzinfo=timezone.utc)
+        if not mfa_record:
+            return {"success": False, "message": "Invalid code"}, 401
 
-    if expires_aware < datetime.now(timezone.utc):
-        return False, "Code expired"
+        # Check expiration
+        expires_aware = mfa_record.expires_at.replace(tzinfo=timezone.utc)
+        if expires_aware < datetime.now(timezone.utc):
+            return {"success": False, "message": "Code expired"}, 401
 
-    mfa_record.verified = True
-    db.session.commit()
-    return True, "Code verified successfully"
+        # Mark code as verified
+        mfa_record.verified = True
+        db.session.commit()
+
+        return {
+            "success": True,
+            "message": "Code verified successfully"
+        }, 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("ERROR verify_mfa_code:", str(e))
+        return {"success": False, "message": "Server error"}, 500
