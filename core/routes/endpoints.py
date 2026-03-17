@@ -641,3 +641,35 @@ class ResendMFAResource(Resource):
         response, status_code = resend_mfa(email, user_type)
 
         return response, status_code
+
+@api_ns.route('/verify-mfa')
+class VerifyMfaResource(Resource):
+
+    @api_ns.doc(
+        description="Verify the MFA code for a user after login. Returns JWT token if successful.",
+        responses={
+            200: ("MFA verified", mfa_verify_success_model),
+            400: ("Validation error", error_model),
+            401: ("Invalid or expired MFA code", error_model)
+        }
+    )
+    @api_ns.expect(mfa_verify_model, validate=True)
+    def post(self):
+        """
+        MFA Verification Endpoint
+        --------------------------
+        Validates a Multi-Factor Authentication (MFA) code sent to the user.
+
+        **Flow:**
+        1. Validate incoming request body.
+        2. Call `verify_mfa_code(user_id, code)` service.
+        3. Return success response with JWT token if verification passes.
+        """
+        data = request.json
+
+        result, status = verify_mfa_code(
+            user_id=data.get("user_id"),
+            code=data.get("code")
+        )
+
+        return result, status
