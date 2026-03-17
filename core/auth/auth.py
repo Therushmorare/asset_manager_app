@@ -62,7 +62,21 @@ def signin_applicants(email, password, user_type):
         session.pop('login_attempts', None)
 
         #mfa code send
-        mfa_code = save_mfa_code(user.id, user_type)
+        if isinstance(user, AdminUser):
+            user_type = "admin"
+            user_id = user.admin_id
+        elif isinstance(user, AssetManager):
+            user_type = "asset_manager"
+            user_id = user.manager_id
+        elif isinstance(user, AssetController):
+            user_type = "asset_controller"
+            user_id = user.controller_id
+        else:
+            user_type = "custodian"
+            user_id = user.user_id
+
+        # Generate MFA
+        mfa_code = save_mfa_code(user_id, user_type)
         user_email = getattr(user, "email", email)
         if user_email:
             send_mfa_email(user_email, user_type, mfa_code)

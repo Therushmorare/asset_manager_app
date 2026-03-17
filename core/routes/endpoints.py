@@ -20,6 +20,7 @@ from flask_limiter.util import get_remote_address
 from config import Config
 from functions.form_sanitizer import sanitize_input
 from core.auth.resend_mfa import resend_mfa
+from core.auth.forgot_password import *
 
 limiter = Limiter(get_remote_address, default_limits=["100 per hour"], storage_uri= Config.redis_connection)
 """
@@ -254,6 +255,15 @@ resend_mfa_model = api_ns.model('ResendMFA', {
         description='Type of user',
         enum=['ADMIN', 'ASSET_MANAGER', 'ASSET_CONTROLLER', 'CUSTODIAN']
     )
+})
+
+forgot_password_model = api_ns.model('ForgotPassword', {
+    'email': fields.String(required=True, description='User email for password reset')
+})
+
+verify_password_model = api_ns.model('VerifyPassword', {
+    'email': fields.String(required=True, description='User email'),
+    'token': fields.String(required=True, description='Token sent via email')
 })
 # -----------------------------
 # Endpoints
@@ -673,3 +683,43 @@ class VerifyMfaResource(Resource):
         )
 
         return result, status
+    
+@api_ns.route('/forgot-password')
+class ForgotPasswordResource(Resource):
+    @api_ns.expect(forgot_password_model)
+    @api_ns.doc(
+        description="Send MFA code to user email to reset password",
+        responses={
+            200: "Success",
+            400: "Missing email",
+            404: "User not found",
+            500: "Internal server error"
+        }
+    )
+    def post(self):
+        data = api_ns.payload
+        email = data.get('email')
+        
+        response, status_code = forgot_password(email)
+        return response, status_code
+
+
+@api_ns.route('/verify-password')
+class VerifyPasswordResource(Resource):
+    @api_ns.expect(verify_password_model)
+    @api_ns.doc(
+        description="Verify token and reset password automatically",
+        responses={
+            200: "Password reset successful",
+            400: "Missing token",
+            404: "User not found",
+            500: "Verification failed"
+        }
+    )
+    def post(self):
+        data = api_ns.payload
+        email = data.get('email')
+        token = data.get('token')
+
+        response, status_code = verify_to_password(email, token)
+        return response, status_code
