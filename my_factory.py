@@ -38,6 +38,7 @@ def create_app():
                     "http://localhost:3000",
                     "http://64.225.45.179:3000",
                     "http://127.0.0.1:5000",
+                    "https://talius-asset-manager-4i6ix.ondigitalocean.app"
                 ]
             }
         },
