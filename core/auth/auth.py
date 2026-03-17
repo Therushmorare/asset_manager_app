@@ -55,8 +55,8 @@ def signin_applicants(email, password, user_type):
             return {"message": "Password is incorrect"}, 401
 
         # Verify account confirmation
-        if str(user.confirmation_status) != "True":
-            return {"message": "Please verify your account before logging in"}, 401
+        '''if str(user.confirmation_status) != "True":
+            return {"message": "Please verify your account before logging in"}, 401'''
 
         # Reset login attempts
         session.pop('login_attempts', None)
@@ -84,7 +84,7 @@ def signin_applicants(email, password, user_type):
         # Perform login + create JWT
         login_user(user)
         access_token = create_access_token(
-            identity=str(user.applicant_id),  # must be a string
+            identity=str(user_id),  # must be a string
             additional_claims={"role": f"{user_type}_applicant"},
             expires_delta=timedelta(hours=1)
         )
