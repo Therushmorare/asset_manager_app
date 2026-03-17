@@ -93,7 +93,7 @@ def signin_applicants(email, password, user_type):
             "message": "User logged in successfully",
             "email": email,
             "user_type": user_type,
-            "user_id": user.applicant_id,
+            "user_id": user_id,
             "access_token": access_token
         }, 200
 
