@@ -2,6 +2,7 @@
 
 TEMPLATE_FIELDS = {
     "asset_id": {"required": False, "type": str},
+    "name": {"required": False, "type": str},
     "description": {"required": True, "type": str},
     "category": {"required": True, "type": str},
     "sub_category": {"required": False, "type": str},
