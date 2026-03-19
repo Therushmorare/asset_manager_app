@@ -21,6 +21,7 @@ from config import Config
 from functions.form_sanitizer import sanitize_input
 from core.auth.resend_mfa import resend_mfa
 from core.auth.forgot_password import *
+from core.queries.general_queries import *
 
 limiter = Limiter(get_remote_address, default_limits=["100 per hour"], storage_uri= Config.redis_connection)
 """
@@ -34,6 +35,29 @@ api_ns = Namespace("App", description="App API endpoints")
 # ------------------------------
 # Models
 # -------------------------------
+asset_model = api_ns.model('Asset', {
+    'added_by': fields.String,
+    'asset_id': fields.String,
+    'name': fields.String,
+    'description': fields.String,
+    'category': fields.String,
+    'sub_category': fields.String,
+    'department': fields.String,
+    'custodian': fields.String,
+    'location': fields.String,
+    'acquisition_date': fields.String,
+    'cost': fields.Float,
+    'residual_value': fields.Float,
+    'useful_life_years': fields.Integer,
+    'depreciation_method': fields.String,
+    'qr_code': fields.String,
+    'status': fields.String,
+    'disposal_date': fields.String,
+    'disposal_value': fields.Float,
+    'gain_loss': fields.Float,
+    'created_at': fields.String,
+    'updated_at': fields.String
+})
 
 login_model = api_ns.model("LoginRequest", {
     "email": fields.String(required=True, example="admin@example.com"),
@@ -722,4 +746,19 @@ class VerifyPasswordResource(Resource):
         token = data.get('token')
 
         response, status_code = verify_to_password(email, token)
+        return response, status_code
+
+@api_ns.route('/getAssets')
+class GetAssets(Resource):
+
+    @api_ns.doc(
+        description="Retrieve all assets in the system",
+        responses={
+            200: "Assets retrieved successfully",
+            404: "No assets found",
+            500: "Internal server error"
+        }
+    )
+    def get(self):
+        response, status_code = get_assets()
         return response, status_code
