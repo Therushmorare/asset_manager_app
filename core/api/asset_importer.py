@@ -14,17 +14,19 @@ MAX_ROWS = 1000
 def insert_assets_to_db(all_valid):
     asset_ids = []
     try:
-        with db.session.begin():
-            for row in all_valid:
-                asset = Asset(**row)
-                db.session.add(asset)
-                db.session.flush()  # ensures asset.id is available
-                asset_ids.append(asset.id)
+        for row in all_valid:
+            asset = Asset(**row)
+            db.session.add(asset)
+            db.session.flush()  # get ID immediately
+            asset_ids.append(asset.id)
+
+        db.session.commit()  # explicit commit (IMPORTANT)
+
         return True, asset_ids, None
+
     except Exception as e:
         db.session.rollback()
         return False, [], str(e)
-
 
 # Celery task
 @celery_ext.celery.task(bind=True)
