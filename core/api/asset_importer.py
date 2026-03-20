@@ -29,9 +29,6 @@ def insert_assets_to_db(all_valid):
 # Celery task
 @celery_ext.celery.task(bind=True)
 def import_assets(self, user_id, csv_content):
-    """
-    csv_content: bytes or string of the uploaded CSV
-    """
     try:
         if not user_id:
             return {'message': 'Please login to import assets'}, 400
@@ -39,7 +36,6 @@ def import_assets(self, user_id, csv_content):
         if not csv_content:
             return {'message': 'Please provide asset csv file'}, 400
 
-        # Decode content if bytes
         if isinstance(csv_content, bytes):
             csv_content = csv_content.decode('utf-8')
 
@@ -47,6 +43,11 @@ def import_assets(self, user_id, csv_content):
 
         all_valid = []
         all_errors = []
+
+        # Get existing asset_ids to prevent duplicates
+        existing_asset_ids = {
+            a.asset_id for a in Asset.query.with_entities(Asset.asset_id).all()
+        }
 
         for idx, row in enumerate(reader, start=1):
             if idx > MAX_ROWS:
@@ -57,10 +58,21 @@ def import_assets(self, user_id, csv_content):
                 break
 
             validated_row, errors = validate_row(row)
+
             if errors:
                 all_errors.append({"row": idx, "errors": errors})
-            else:
-                all_valid.append(validated_row)
+                continue
+
+            # Prevent duplicate asset_id
+            if validated_row.get("asset_id") in existing_asset_ids:
+                all_errors.append({
+                    "row": idx,
+                    "errors": ["Duplicate asset_id already exists"]
+                })
+                continue
+
+            all_valid.append(validated_row)
+            existing_asset_ids.add(validated_row.get("asset_id"))  # prevent duplicates within file
 
         # Insert transactionally
         asset_ids = []
@@ -69,11 +81,17 @@ def import_assets(self, user_id, csv_content):
             if not success:
                 return {"message": f"Could not upload assets: {db_error}"}, 500
 
-        # Trigger QR generation only for inserted assets
+        # Trigger QR generation (clean + scalable)
+        for asset_id in asset_ids:
+            generate_qr_code.delay(asset_id=asset_id)
+
+        # Log ONCE per import (not per asset)
         if asset_ids:
-            for asset_id in asset_ids:
-                generate_qr_code.delay(asset_id=asset_id)
-                log_applicant_track(user_id, 'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN', f'Added bulk asset with the following asset IDs:{asset_ids}')
+            log_applicant_track(
+                user_id,
+                'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN',
+                f'Bulk asset import completed. Asset IDs: {asset_ids}'
+            )
 
         return {
             "imported_rows": len(all_valid),
@@ -82,7 +100,6 @@ def import_assets(self, user_id, csv_content):
         }, 200
 
     except Exception as e:
-        # Ensure rollback if something fails
         db.session.rollback()
         current_app.logger.error(f"Error while importing assets: {e}")
         return {'message': 'Something went wrong'}, 500
