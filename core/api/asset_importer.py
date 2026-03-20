@@ -71,9 +71,9 @@ def import_assets(self, user_id, csv_content):
 
         # Trigger QR generation only for inserted assets
         if asset_ids:
-            generate_qr_code.delay(asset_ids=asset_ids)
-
-        log_applicant_track(user_id, 'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN', f'Added bulk asset with the following asset IDs:{asset_ids}')
+            for asset_id in asset_ids:
+                generate_qr_code.delay(asset_id=asset_id)
+                log_applicant_track(user_id, 'ASSET MANAGER/ ASSET CONTROLLER/ ADMIN', f'Added bulk asset with the following asset IDs:{asset_ids}')
 
         return {
             "imported_rows": len(all_valid),
